@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>肉肉食谱 - 预览版</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #E85D4C;
+      --primary-light: #FF7B6B;
+      --secondary: #4CAF50;
+      --text-primary: #2D2D2D;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --bg-primary: #FFFAF8;
+      --bg-secondary: #FFFFFF;
+      --border-color: #F0E6E4;
+      --font-handwriting: 'Caveat', cursive;
+      --font-body: 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #FFF5F3 0%, var(--bg-primary) 100%);
+    }
+    
+    .status-bar {
+      height: 44px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .page {
+      min-height: calc(100vh - 44px);
+      padding-bottom: 100px;
+    }
+    
+    .header {
+      padding: 30px 20px 20px;
+      text-align: center;
+    }
+    
+    .header-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    
+    .logo-text { font-size: 32px; }
+    
+    .main-title {
+      font-family: var(--font-handwriting);
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .sub-title {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .recommend-section {
+      padding: 0 20px;
+      margin-bottom: 20px;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .section-title {
+      font-family: var(--font-handwriting);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .shuffle-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      background: var(--bg-secondary);
+      border-radius: 15px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+    
+    .recommend-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 4px 15px rgba(232, 93, 76, 0.3);
+    }
+    
+    .recommend-content { flex: 1; }
+    
+    .recommend-name {
+      font-family: var(--font-handwriting);
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+    
+    .recommend-tags {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .tag {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 15px;
+    }
+    
+    .recommend-hint {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    
+    .recommend-icon { font-size: 40px; margin-left: 15px; }
+    
+    .category-section {
+      padding: 0 20px;
+      margin-bottom: 15px;
+    }
+    
+    .category-list {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 5px 0;
+    }
+    
+    .category-list::-webkit-scrollbar { display: none; }
+    
+    .category-item {
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    
+    .category-item.active {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+    
+    .search-section {
+      padding: 0 20px;
+      margin-bottom: 15px;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 25px;
+      font-size: 14px;
+      outline: none;
+    }
+    
+    .recipe-list {
+      padding: 0 20px;
+    }
+    
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .list-count { font-size: 13px; color: var(--text-muted); }
+    
+    .btn-add {
+      padding: 6px 14px;
+      background: var(--primary);
+      color: white;
+      border-radius: 15px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .recipe-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    
+    .recipe-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+    
+    .recipe-icon {
+      font-size: 28px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #FFF0EE 0%, #FFE5E2 100%);
+      border-radius: 10px;
+    }
+    
+    .recipe-info { flex: 1; }
+    
+    .recipe-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+    
+    .recipe-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .tag-primary {
+      background: rgba(232, 93, 76, 0.1);
+      color: var(--primary);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 15px;
+    }
+    
+    .ingredient-count { font-size: 12px; color: var(--text-muted); }
+    
+    .delete-btn { font-size: 18px; opacity: 0.6; cursor: pointer; }
+    
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 25px;
+      text-align: center;
+    }
+    
+    .empty-emoji { font-size: 60px; margin-bottom: 15px; }
+    .empty-text {
+      font-family: var(--font-handwriting);
+      font-size: 24px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    
+    .empty-hint { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    
+    .btn-primary {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .mt-30 { margin-top: 15px; }
+    
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      display: flex;
+      justify-content: space-around;
+      background: var(--bg-secondary);
+      padding: 8px 0;
+      padding-bottom: calc(8px + 20px);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.06);
+      z-index: 100;
+    }
+    
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 5px 20px;
+      cursor: pointer;
+    }
+    
+    .tab-icon { font-size: 22px; margin-bottom: 2px; }
+    
+    .tab-item span:last-child {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    
+    .tab-item.active span:last-child {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    
+    .modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content {
+      width: 90%;
+      max-height: 85vh;
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 20px;
+      transform: translateY(25px);
+      transition: transform 0.3s;
+      overflow-y: auto;
+    }
+    
+    .modal.show .modal-content { transform: translateY(0); }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-family: var(--font-handwriting);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    
+    .form-group { margin-bottom: 16px; }
+    
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    
+    .input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 14px;
+      background: var(--bg-primary);
+      font-family: var(--font-body);
+    }
+    
+    .input::placeholder {
+      color: #BBBBBB;
+    }
+    
+    select.input {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      color: #BBBBBB;
+    }
+    
+    select.input option {
+      color: var(--text-primary);
+    }
+    
+    .textarea {
+      min-height: 90px;
+      line-height: 1.8;
+      resize: none;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    
+    .form-actions .btn { flex: 1; }
+    
+    .btn-secondary {
+      padding: 12px;
+      background: var(--bg-secondary);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-block { width: 100%; }
+    
+    .page-view { display: none; }
+    .page-view.active { display: block; }
+  </style>
+</head>
+<body>
+  <div id="home-page" class="page-view active">
+    <div class="status-bar">9:41</div>
+    <div class="page">
+      <div class="header">
+        <div class="header-title">
+          <span class="logo-text">🥩</span>
+          <span class="main-title">肉肉食谱</span>
+        </div>
+        <span class="sub-title">今天想吃什么？</span>
+      </div>
+
+      <div class="recommend-section">
+        <div class="section-header">
+          <span class="section-title">今日推荐</span>
+          <div class="shuffle-btn" onclick="shuffleRecommend()">
+            <span>🔄</span>
+            <span>换一换</span>
+          </div>
+        </div>
+        <div class="recommend-card" onclick="showRecommendDetail()">
+          <div class="recommend-content">
+            <div class="recommend-name" id="recommend-name">红烧肉</div>
+            <div class="recommend-tags">
+              <span class="tag" id="recommend-category">荤菜</span>
+              <span class="tag" id="recommend-ingredient-count">5种配料</span>
+            </div>
+            <div class="recommend-hint">点击查看完整做法 →</div>
+          </div>
+          <div class="recommend-icon">🍳</div>
+        </div>
+      </div>
+
+      <div class="category-section">
+        <div class="category-list">
+          <span class="category-item active" onclick="selectCategory(this)">全部</span>
+          <span class="category-item" onclick="selectCategory(this)">荤菜</span>
+          <span class="category-item" onclick="selectCategory(this)">素菜</span>
+          <span class="category-item" onclick="selectCategory(this)">甜品</span>
+          <span class="category-item" onclick="selectCategory(this)">饮品</span>
+        </div>
+      </div>
+
+      <div class="search-section">
+        <input class="search-input" placeholder="搜索菜名或配料..." id="search-input" oninput="renderRecipes(this.value)" />
+      </div>
+
+      <div class="recipe-list">
+        <div id="recipe-list"></div>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab-item active" onclick="switchTab('home')">
+        <span class="tab-icon">🏠</span>
+        <span>首页</span>
+      </div>
+      <div class="tab-item" onclick="switchTab('calendar')">
+        <span class="tab-icon">📅</span>
+        <span>计划</span>
+      </div>
+      <div class="tab-item" onclick="switchTab('me')">
+        <span class="tab-icon">👤</span>
+        <span>我的</span>
+      </div>
+    </div>
+
+    <div class="modal" id="add-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="modal-title">添加新菜谱</span>
+          <span class="modal-close" onclick="closeAddModal()">✕</span>
+        </div>
+
+        <form id="add-form">
+          <div class="form-group">
+            <label class="form-label">菜名 *</label>
+            <input class="input" name="name" placeholder="例如：红烧肉" maxlength="50" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">分类 *</label>
+            <select class="input" name="category" style="cursor: pointer;">
+              <option value="">请选择分类</option>
+              <option value="荤菜">荤菜</option>
+              <option value="素菜">素菜</option>
+              <option value="甜品">甜品</option>
+              <option value="饮品">饮品</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">配料 *（每行一个）</label>
+            <textarea class="input textarea" name="ingredients" placeholder="五花肉 500g
+生抽 2勺
+老抽 1勺
+..." maxlength="500"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">做法步骤（选填，每行一步）</label>
+            <textarea class="input textarea" name="steps" placeholder="1. 五花肉切块焯水
+2. 起锅烧油，放入冰糖
+3. ..." maxlength="1000"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeAddModal()">取消</button>
+            <button type="button" class="btn btn-primary" onclick="addRecipe()">保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="detail-page" class="page-view">
+    <div class="status-bar">9:41</div>
+    <div class="page" style="padding-bottom: 100px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 30px 20px 15px;">
+        <div class="back-btn" onclick="goBack()" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.9); border-radius: 50%; font-size: 18px; cursor: pointer;">←</div>
+        <span style="font-family: var(--font-handwriting); font-size: 18px; font-weight: 600;">菜谱详情</span>
+        <div class="share-btn" onclick="goBack()" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.9); border-radius: 50%; font-size: 18px; cursor: pointer;">🗑️</div>
+      </div>
+
+      <div style="position: relative; padding: 0 20px; margin-top: -10px;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 200px; background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%); border-radius: 0 0 30px 30px;"></div>
+        <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; padding-top: 30px;">
+          <span style="font-size: 70px;" id="detail-emoji">🍲</span>
+          <span style="font-family: var(--font-handwriting); font-size: 32px; font-weight: 700; color: white; margin: 15px 0 10px;" id="detail-title">红烧肉</span>
+          <div style="display: flex; gap: 10px;">
+            <span class="tag" id="detail-category">荤菜</span>
+            <span class="tag" id="detail-count">5种配料</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <span style="font-family: var(--font-handwriting); font-size: 20px; font-weight: 600;">🥬 配料清单</span>
+          <div style="padding: 6px 12px; background: var(--bg-secondary); border-radius: 15px; font-size: 12px; color: var(--primary); cursor: pointer;">复制全部</div>
+        </div>
+        <div style="background: var(--bg-secondary); border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);" id="detail-ingredients"></div>
+      </div>
+
+      <div style="padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <span style="font-family: var(--font-handwriting); font-size: 20px; font-weight: 600;">👨‍🍳 烹饪步骤</span>
+          <div style="padding: 6px 12px; background: var(--bg-secondary); border-radius: 15px; font-size: 12px; color: var(--primary); cursor: pointer;">复制步骤</div>
+        </div>
+        <div style="background: var(--bg-secondary); border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);" id="detail-steps"></div>
+      </div>
+    </div>
+
+    <div style="position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; padding: 15px 20px; padding-bottom: calc(15px + 20px); background: var(--bg-secondary); box-shadow: 0 -2px 10px rgba(0,0,0,0.06);">
+      <button style="display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%); color: white; border-radius: 25px; font-size: 16px; font-weight: 600; border: none;">
+        <span>📤</span>
+        <span>分享给好友</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="me-page" class="page-view">
+    <div class="status-bar">9:41</div>
+    <div class="page" style="padding-bottom: 100px;">
+      <div style="display: flex; flex-direction: column; align-items: center; padding: 30px 20px 20px; background: linear-gradient(180deg, #FFF5F3 0%, var(--bg-primary) 100%);">
+        <div style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(232, 93, 76, 0.3);">
+          <span style="font-size: 40px;">🍖</span>
+        </div>
+        <span style="font-family: var(--font-handwriting); font-size: 24px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">肉肉食谱</span>
+        <span style="font-size: 13px; color: var(--text-muted);">好好吃饭，认真生活</span>
+      </div>
+
+      <div style="display: flex; padding: 0 20px; gap: 10px; margin-bottom: 20px;">
+        <div style="flex: 1; background: var(--bg-secondary); border-radius: 12px; padding: 15px 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <span id="stat-my-count" style="display: block; font-family: var(--font-handwriting); font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 4px;">0</span>
+          <span style="font-size: 12px; color: var(--text-muted);">我的菜谱</span>
+        </div>
+        <div style="flex: 1; background: var(--bg-secondary); border-radius: 12px; padding: 15px 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <span id="stat-category-count" style="display: block; font-family: var(--font-handwriting); font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 4px;">0</span>
+          <span style="font-size: 12px; color: var(--text-muted);">分类</span>
+        </div>
+        <div style="flex: 1; background: var(--bg-secondary); border-radius: 12px; padding: 15px 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <span id="stat-week-count" style="display: block; font-family: var(--font-handwriting); font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 4px;">0</span>
+          <span style="font-size: 12px; color: var(--text-muted);">本周新增</span>
+        </div>
+      </div>
+
+      <div style="padding: 0 20px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-family: var(--font-handwriting); font-size: 18px; font-weight: 600;">🏷️ 菜谱分类</span>
+          <span style="padding: 5px 12px; background: var(--primary); color: white; border-radius: 15px; font-size: 12px; cursor: pointer;">+ 添加</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <span style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--bg-secondary); border-radius: 20px; font-size: 13px; box-shadow: 0 1px 5px rgba(0,0,0,0.04);">荤菜 <span style="font-size: 16px; color: var(--text-muted); cursor: pointer;">×</span></span>
+          <span style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--bg-secondary); border-radius: 20px; font-size: 13px; box-shadow: 0 1px 5px rgba(0,0,0,0.04);">素菜 <span style="font-size: 16px; color: var(--text-muted); cursor: pointer;">×</span></span>
+          <span style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--bg-secondary); border-radius: 20px; font-size: 13px; box-shadow: 0 1px 5px rgba(0,0,0,0.04);">甜品 <span style="font-size: 16px; color: var(--text-muted); cursor: pointer;">×</span></span>
+          <span style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--bg-secondary); border-radius: 20px; font-size: 13px; box-shadow: 0 1px 5px rgba(0,0,0,0.04);">饮品 <span style="font-size: 16px; color: var(--text-muted); cursor: pointer;">×</span></span>
+        </div>
+      </div>
+
+      <div style="padding: 0 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-family: var(--font-handwriting); font-size: 18px; font-weight: 600;">💡 关于</span>
+        </div>
+        <div style="background: var(--bg-secondary); border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <span style="display: block; font-family: var(--font-handwriting); font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 4px;">肉肉食谱</span>
+          <span style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px; display: block;">版本 1.0.0</span>
+          <span style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">属于你的个人菜谱管家，记录每一道想吃的菜</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab-item" onclick="switchTab('home')">
+        <span class="tab-icon">🏠</span>
+        <span>首页</span>
+      </div>
+      <div class="tab-item" onclick="switchTab('calendar')">
+        <span class="tab-icon">📅</span>
+        <span>计划</span>
+      </div>
+      <div class="tab-item active" onclick="switchTab('me')">
+        <span class="tab-icon">👤</span>
+        <span>我的</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="calendar-page" class="page-view">
+    <div class="status-bar">9:41</div>
+    <div class="page" style="padding-bottom: 100px;">
+      <div style="padding: 30px 20px 15px; text-align: center;">
+        <span style="font-family: var(--font-handwriting); font-size: 32px; font-weight: 700; color: var(--primary);">📅 做菜计划</span>
+      </div>
+
+      <!-- 星期选择 -->
+      <div style="padding: 0 20px; margin-bottom: 15px;">
+        <div id="week-selector" style="display: flex; gap: 6px; overflow-x: auto;">
+          <!-- JS 动态生成 -->
+        </div>
+      </div>
+
+      <!-- 当日计划列表 -->
+      <div style="padding: 0 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-family: var(--font-handwriting); font-size: 18px; font-weight: 600;" id="plan-date-title">今天</span>
+          <span style="font-size: 12px; color: var(--text-muted);" id="plan-count"></span>
+        </div>
+        <div id="plan-list"></div>
+        <div id="plan-empty" style="display: none; text-align: center; padding: 40px 20px;">
+          <span style="font-size: 48px; display: block; margin-bottom: 10px;">🍽️</span>
+          <span style="font-family: var(--font-handwriting); font-size: 20px; color: var(--text-primary); display: block; margin-bottom: 6px;">今天还没安排</span>
+          <span style="font-size: 13px; color: var(--text-muted);">点击下方按钮添加计划</span>
+        </div>
+        <button onclick="openPlanModal()" style="width:100%; padding: 14px; background: var(--bg-secondary); border: 2px dashed var(--border-color); border-radius: 12px; font-size: 15px; color: var(--text-muted); cursor: pointer; margin-top: 12px;">＋ 添加计划</button>
+      </div>
+    </div>
+
+    <!-- 添加计划弹窗 -->
+    <div class="modal" id="plan-modal">
+      <div class="modal-content" style="max-height: 80vh;">
+        <div class="modal-header">
+          <span class="modal-title">添加做菜计划</span>
+          <span class="modal-close" onclick="closePlanModal()">✕</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">选择菜品</label>
+          <select class="input" id="plan-recipe-select" style="cursor: pointer;">
+            <option value="">-- 请选择菜品 --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">计划日期</label>
+          <input type="date" class="input" id="plan-date-input" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">用餐类型</label>
+          <select class="input" id="plan-meal-type" style="cursor: pointer;">
+            <option value="早餐">早餐</option>
+            <option value="午餐" selected>午餐</option>
+            <option value="晚餐">晚餐</option>
+            <option value="加餐">加餐</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closePlanModal()">取消</button>
+          <button class="btn btn-primary" onclick="addPlan()">确定添加</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab-item" onclick="switchTab('home')">
+        <span class="tab-icon">🏠</span>
+        <span>首页</span>
+      </div>
+      <div class="tab-item active" onclick="switchTab('calendar')">
+        <span class="tab-icon">📅</span>
+        <span>计划</span>
+      </div>
+      <div class="tab-item" onclick="switchTab('me')">
+        <span class="tab-icon">👤</span>
+        <span>我的</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 加载菜谱数据库 -->
+  <script src="recipes-data.js"></script>
+
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      const page = document.getElementById(tab + '-page');
+      if (page) {
+        page.classList.add('active');
+        document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+      }
+    }
+    
+    function selectCategory(el) {
+      document.querySelectorAll('.category-item').forEach(item => item.classList.remove('active'));
+      el.classList.add('active');
+      renderRecipes(document.getElementById('search-input')?.value || '');
+    }
+    
+    function openAddModal() {
+      document.getElementById('add-modal').classList.add('show');
+    }
+    
+    function closeAddModal() {
+      document.getElementById('add-modal').classList.remove('show');
+    }
+    
+    function addRecipe() {
+      const name = document.querySelector('input[name="name"]').value;
+      const category = document.querySelector('select[name="category"]').value || '荤菜';
+      const ingredients = document.querySelector('textarea[name="ingredients"]').value.split('\n').filter(i => i.trim());
+      const steps = document.querySelector('textarea[name="steps"]').value.split('\n').filter(s => s.trim());
+      
+      if (!name.trim()) {
+        alert('请输入菜名');
+        return;
+      }
+      
+      if (ingredients.length === 0) {
+        alert('请输入配料');
+        return;
+      }
+      
+      const recipe = {
+        id: Date.now(),
+        name: name.trim(),
+        category: category,
+        ingredients: ingredients,
+        steps: steps,
+        createdAt: new Date().toISOString()
+      };
+      
+      const recipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+      recipes.unshift(recipe);
+      localStorage.setItem('recipes', JSON.stringify(recipes));
+      
+      // 清空表单
+      document.querySelector('input[name="name"]').value = '';
+      document.querySelector('select[name="category"]').value = '';
+      document.querySelector('textarea[name="ingredients"]').value = '';
+      document.querySelector('textarea[name="steps"]').value = '';
+      
+      closeAddModal();
+      renderRecipes();
+      updateMeStats();
+      alert('添加成功！');
+    }
+    
+    function getCategoryEmoji(category) {
+      const map = {
+        '荤菜': '🍖',
+        '素菜': '🥬',
+        '甜品': '🍰',
+        '饮品': '🥤'
+      };
+      return map[category] || '🍲';
+    }
+    
+    function getAllRecipes() {
+      const userRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+      // 将 fullRecipeDB 转换为与用户菜谱相同格式
+      const dbRecipes = fullRecipeDB.map((r, i) => ({
+        id: 'db-' + i,
+        name: r.name,
+        category: r.category,
+        ingredients: r.ingredients,
+        steps: r.steps || [],
+        fromDB: true
+      }));
+      return [...userRecipes, ...dbRecipes];
+    }
+
+    function renderRecipes(filter = '') {
+      const recipes = getAllRecipes();
+      const category = document.querySelector('.category-item.active')?.textContent || '全部';
+      const listContainer = document.getElementById('recipe-list');
+
+      let filtered = recipes;
+      if (category !== '全部') {
+        filtered = filtered.filter(r => r.category === category);
+      }
+      if (filter) {
+        filtered = filtered.filter(r => r.name.includes(filter) || r.ingredients.join('').includes(filter));
+      }
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = `
+          <div class="list-header">
+            <span class="list-count">共 0 道菜</span>
+            <button class="btn-add" onclick="openAddModal()">+ 添加</button>
+          </div>
+          <div class="empty-state" style="display: flex;">
+            <span class="empty-emoji">🍽️</span>
+            <span class="empty-text">还没有菜谱</span>
+            <span class="empty-hint">点击下方按钮添加你的第一道菜</span>
+          </div>
+        `;
+        return;
+      }
+
+      let html = `
+        <div class="list-header">
+          <span class="list-count">共 ${filtered.length} 道菜</span>
+          <button class="btn-add" onclick="openAddModal()">+ 添加</button>
+        </div>
+      `;
+
+      filtered.forEach(recipe => {
+        const idStr = typeof recipe.id === 'string' ? `'${recipe.id}'` : recipe.id;
+        const deleteBtn = recipe.fromDB
+          ? `<span style="font-size:14px;color:var(--text-muted);padding:0 6px;">内置</span>`
+          : `<span class="delete-btn" onclick="event.stopPropagation(); deleteRecipe(${idStr})">🗑️</span>`;
+        html += `
+          <div class="recipe-card" onclick="showRecipeDetail(${idStr})">
+            <div class="recipe-left">
+              <div class="recipe-icon">${getCategoryEmoji(recipe.category)}</div>
+              <div class="recipe-info">
+                <div class="recipe-name">${recipe.name}</div>
+                <div class="recipe-meta">
+                  <span class="tag tag-primary">${recipe.category}</span>
+                  <span class="ingredient-count">${recipe.ingredients.length}种配料</span>
+                </div>
+              </div>
+            </div>
+            ${deleteBtn}
+          </div>
+        `;
+      });
+      
+      listContainer.innerHTML = html;
+    }
+    
+    // 页面加载时渲染
+    document.addEventListener('DOMContentLoaded', function() {
+      renderRecipes();
+      shuffleRecommend();
+      updateMeStats();
+    });
+
+    // 更新"我的"页面统计数据
+    function updateMeStats() {
+      try {
+        const allRecipes = getAllRecipes();
+        const userRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+        const myCount = document.getElementById('stat-my-count');
+        const catCount = document.getElementById('stat-category-count');
+        const weekCount = document.getElementById('stat-week-count');
+        if (!myCount || !catCount || !weekCount) return;
+
+        // 全部菜品数
+        myCount.textContent = allRecipes.length;
+        // 已用分类数（来自用户添加的菜谱）
+        const categories = new Set(userRecipes.map(r => r.category));
+        catCount.textContent = categories.size || 0;
+
+        // 本周新增（只统计用户添加的）
+        const today = new Date();
+        const day = today.getDay();
+        const monday = new Date(today);
+        monday.setDate(today.getDate() - (day === 0 ? 6 : day - 1));
+        monday.setHours(0, 0, 0, 0);
+        const thisWeek = userRecipes.filter(r => new Date(r.createdAt) >= monday).length;
+        weekCount.textContent = thisWeek;
+      } catch(e) { console.warn('updateMeStats error:', e); }
+    }
+
+    function deleteRecipe(id) {
+      if (confirm('确定要删除这个菜谱吗？')) {
+        const recipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+        const filtered = recipes.filter(r => String(r.id) !== String(id));
+        localStorage.setItem('recipes', JSON.stringify(filtered));
+        renderRecipes();
+        alert('已删除');
+      }
+    }
+
+    function showRecipeDetail(id) {
+      const recipes = getAllRecipes();
+      const recipe = recipes.find(r => String(r.id) === String(id));
+      if (!recipe) return;
+      // 填充详情页
+      document.getElementById('detail-title').textContent = recipe.name;
+      document.getElementById('detail-emoji').textContent = getCategoryEmoji(recipe.category);
+      document.getElementById('detail-category').textContent = recipe.category;
+      document.getElementById('detail-count').textContent = recipe.ingredients.length + '种配料';
+      // 配料
+      let ingHtml = '';
+      recipe.ingredients.forEach(ing => {
+        ingHtml += `<div style="display:flex; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-color);">
+          <div style="width:7px; height:7px; background:var(--primary); border-radius:50%; margin-right:12px;"></div>
+          <span style="font-size:15px;">${ing}</span></div>`;
+      });
+      document.getElementById('detail-ingredients').innerHTML = ingHtml;
+      // 步骤
+      let stepHtml = '';
+      (recipe.steps || []).forEach((step, i) => {
+        stepHtml += `<div style="display:flex; gap:12px; padding:12px 0; ${i < recipe.steps.length - 1 ? 'border-bottom:1px solid var(--border-color);' : ''}">
+          <div style="width:25px; height:25px; background:linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0;">${i+1}</div>
+          <span style="flex:1; font-size:14px; line-height:1.7;">${step}</span></div>`;
+      });
+      if (!stepHtml) stepHtml = '<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:14px;">暂无详细步骤</div>';
+      document.getElementById('detail-steps').innerHTML = stepHtml;
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      document.getElementById('detail-page').classList.add('active');
+    }
+    
+    function goBack() {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      document.getElementById('home-page').classList.add('active');
+    }
+
+    let currentRecommendId = null;
+
+    function shuffleRecommend() {
+      const item = recommendPool[Math.floor(Math.random() * recommendPool.length)];
+      document.getElementById('recommend-name').textContent = item.name;
+      document.getElementById('recommend-category').textContent = item.category;
+      document.getElementById('recommend-ingredient-count').textContent = item.ingredients.length + '种配料';
+      // 保存当前推荐菜品到 getAllRecipes 格式
+      const recipes = getAllRecipes();
+      const match = recipes.find(r => r.name === item.name);
+      currentRecommendId = match ? match.id : null;
+    }
+
+    function showRecommendDetail() {
+      if (currentRecommendId !== null) {
+        showRecipeDetail(currentRecommendId);
+      } else {
+        // fallback: 用名称查找
+        const name = document.getElementById('recommend-name').textContent;
+        const recipes = getAllRecipes();
+        const recipe = recipes.find(r => r.name === name);
+        if (recipe) showRecipeDetail(recipe.id);
+      }
+    }
+    
+    document.getElementById('add-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeAddModal();
+      }
+    });
+
+    // ===== 做菜计划功能 =====
+    let selectedPlanDate = getTodayStr();
+
+    function getTodayStr() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function getWeekDates() {
+      const today = new Date();
+      const day = today.getDay(); // 0=周日
+      const monday = new Date(today);
+      monday.setDate(today.getDate() - (day === 0 ? 6 : day - 1));
+      const dates = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        dates.push(d);
+      }
+      return dates;
+    }
+
+    function formatDateLabel(date) {
+      const todayStr = getTodayStr();
+      const dateStr = date.toISOString().split('T')[0];
+      const weekNames = ['周日','周一','周二','周三','周四','周五','周六'];
+      if (dateStr === todayStr) return '今天';
+      if (dateStr === getYesterdayStr()) return '昨天';
+      if (dateStr === getTomorrowStr()) return '明天';
+      return `${date.getMonth()+1}/${date.getDate()}\n${weekNames[date.getDay()]}`;
+    }
+
+    function getYesterdayStr() {
+      const d = new Date(); d.setDate(d.getDate() - 1);
+      return d.toISOString().split('T')[0];
+    }
+
+    function getTomorrowStr() {
+      const d = new Date(); d.setDate(d.getDate() + 1);
+      return d.toISOString().split('T')[0];
+    }
+
+    function renderWeekSelector() {
+      const dates = getWeekDates();
+      const container = document.getElementById('week-selector');
+      container.innerHTML = '';
+      dates.forEach(d => {
+        const dateStr = d.toISOString().split('T')[0];
+        const isSelected = dateStr === selectedPlanDate;
+        const isToday = dateStr === getTodayStr();
+        const div = document.createElement('div');
+        div.style.cssText = `flex:1; text-align:center; padding:10px 4px; border-radius:12px; cursor:pointer; font-size:12px; line-height:1.5; white-space:pre-line; ${isSelected ? 'background:var(--primary); color:white; font-weight:600;' : 'background:var(--bg-secondary); color:var(--text-secondary);'}`;
+        div.textContent = formatDateLabel(d);
+        div.onclick = () => { selectedPlanDate = dateStr; renderWeekSelector(); renderPlanList(); };
+        container.appendChild(div);
+      });
+    }
+
+    function getAllPlans() {
+      return JSON.parse(localStorage.getItem('cookingPlan') || '[]');
+    }
+
+    function saveAllPlans(plans) {
+      localStorage.setItem('cookingPlan', JSON.stringify(plans));
+    }
+
+    function renderPlanList() {
+      const plans = getAllPlans().filter(p => p.date === selectedPlanDate);
+      const listContainer = document.getElementById('plan-list');
+      const emptyDiv = document.getElementById('plan-empty');
+      const titleEl = document.getElementById('plan-date-title');
+      const countEl = document.getElementById('plan-count');
+
+      const label = selectedPlanDate === getTodayStr() ? '今天' : selectedPlanDate;
+      titleEl.textContent = label + ' 的计划';
+      countEl.textContent = plans.length + ' 道菜';
+
+      if (plans.length === 0) {
+        listContainer.innerHTML = '';
+        emptyDiv.style.display = 'block';
+        return;
+      }
+
+      emptyDiv.style.display = 'none';
+      let html = '';
+      const allPlans = getAllPlans();
+      plans.forEach((plan, idx) => {
+        const globalIdx = allPlans.findIndex(p => p.date === plan.date && p.recipeName === plan.recipeName && p.mealType === plan.mealType);
+        html += `
+          <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg-secondary); border-radius:10px; padding:14px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display:flex; align-items:center; gap:12px; flex:1;">
+              <div style="font-size:28px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#FFF0EE 0%,#FFE5E2 100%); border-radius:10px;">${getCategoryEmoji(plan.category)}</div>
+              <div>
+                <div style="font-size:15px; font-weight:600; color:var(--text-primary);">${plan.recipeName}</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">${plan.mealType} · ${plan.category}</div>
+              </div>
+            </div>
+            <span style="font-size:18px; opacity:0.6; cursor:pointer;" onclick="deletePlan(${globalIdx})">🗑️</span>
+          </div>
+        `;
+      });
+      listContainer.innerHTML = html;
+    }
+
+    function deletePlan(index) {
+      if (index < 0) return;
+      if (!confirm('确定删除这条计划？')) return;
+      const plans = getAllPlans();
+      plans.splice(index, 1);
+      saveAllPlans(plans);
+      renderPlanList();
+    }
+
+    function openPlanModal() {
+      // 填充菜品下拉框
+      const select = document.getElementById('plan-recipe-select');
+      const recipes = getAllRecipes();
+      select.innerHTML = '<option value="">-- 请选择菜品 --</option>';
+      recipes.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r.name;
+        opt.textContent = r.name + '（' + r.category + '）';
+        select.appendChild(opt);
+      });
+      document.getElementById('plan-date-input').value = selectedPlanDate;
+      document.getElementById('plan-modal').classList.add('show');
+    }
+
+    function closePlanModal() {
+      document.getElementById('plan-modal').classList.remove('show');
+    }
+
+    function addPlan() {
+      const recipeName = document.getElementById('plan-recipe-select').value;
+      const date = document.getElementById('plan-date-input').value;
+      const mealType = document.getElementById('plan-meal-type').value;
+      if (!recipeName) { alert('请选择菜品'); return; }
+      if (!date) { alert('请选择日期'); return; }
+
+      const recipes = getAllRecipes();
+      const recipe = recipes.find(r => r.name === recipeName);
+      const plans = getAllPlans();
+      // 避免重复
+      if (plans.find(p => p.date === date && p.recipeName === recipeName && p.mealType === mealType)) {
+        alert('该日期已添加相同菜品和用餐类型'); return;
+      }
+      plans.push({
+        date: date,
+        recipeName: recipeName,
+        category: recipe ? recipe.category : '荤菜',
+        mealType: mealType
+      });
+      saveAllPlans(plans);
+      closePlanModal();
+      if (date === selectedPlanDate) renderPlanList();
+      alert('添加成功！');
+    }
+
+    document.getElementById('plan-modal').addEventListener('click', function(e) {
+      if (e.target === this) closePlanModal();
+    });
+
+    // 初始化计划页面
+    window.initCalendarPage = function() {
+      renderWeekSelector();
+      renderPlanList();
+    };
+
+    // 修改 switchTab 在切换到日历时初始化
+    const origSwitchTab = switchTab;
+    switchTab = function(tab) {
+      if (tab === 'calendar') {
+        if (window.initCalendarPage) window.initCalendarPage();
+      }
+      if (tab === 'me') {
+        updateMeStats();
+      }
+      // 调用原始逻辑（保留原有 switchTab 行为）
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      const page = document.getElementById(tab + '-page');
+      if (page) {
+        page.classList.add('active');
+        document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
+        event && event.currentTarget && event.currentTarget.classList.add('active');
+      }
+    };
+  </script>
+</body>
+</html>
