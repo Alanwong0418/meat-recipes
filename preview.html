@@ -34,17 +34,6 @@
       background: linear-gradient(180deg, #FFF5F3 0%, var(--bg-primary) 100%);
     }
 
-    .status-bar {
-      height: 44px;
-      background: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-
     .page {
       min-height: calc(100vh - 44px);
       padding-bottom: 100px;
@@ -533,7 +522,7 @@
   <div class="toast" id="toast"></div>
 
   <div id="home-page" class="page-view active">
-    <div class="status-bar">9:41</div>
+    
     <div class="page">
       <div class="header">
         <div class="header-title">
@@ -647,7 +636,7 @@
   </div>
 
   <div id="detail-page" class="page-view">
-    <div class="status-bar">9:41</div>
+    
     <div class="page" style="padding-bottom: 100px;">
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 30px 20px 15px;">
         <div onclick="goBack()" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.9); border-radius: 50%; font-size: 18px; cursor: pointer;">←</div>
@@ -693,7 +682,7 @@
   </div>
 
   <div id="me-page" class="page-view">
-    <div class="status-bar">9:41</div>
+    
     <div class="page" style="padding-bottom: 100px;">
       <div style="display: flex; flex-direction: column; align-items: center; padding: 30px 20px 20px; background: linear-gradient(180deg, #FFF5F3 0%, var(--bg-primary) 100%);">
         <div style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(232, 93, 76, 0.3);">
@@ -754,7 +743,7 @@
   </div>
 
   <div id="calendar-page" class="page-view">
-    <div class="status-bar">9:41</div>
+    
     <div class="page" style="padding-bottom: 100px;">
       <div style="padding: 30px 20px 15px; text-align: center;">
         <span style="font-family: var(--font-handwriting); font-size: 32px; font-weight: 700; color: var(--primary);">📅 做菜计划</span>
@@ -1007,7 +996,7 @@
       filtered.forEach(recipe => {
         const idStr = typeof recipe.id === 'string' ? `'${recipe.id.replace(/'/g, "\\'")}'` : `'${recipe.id}'`;
         const deleteBtn = recipe.fromDB
-          ? `<span style="font-size:14px;color:var(--text-muted);padding:0 6px;">内置</span>`
+          ? ''
           : `<span class="delete-btn" onclick="event.stopPropagation(); deleteRecipe(${idStr})">🗑️</span>`;
         html += `
           <div class="recipe-card" onclick="showRecipeDetail(${idStr})">
