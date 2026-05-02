@@ -1,0 +1,177 @@
+<!-- pages/home/home.wxml -->
+<view class="page">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <view class="header-title">
+      <text class="logo-text">🥩</text>
+      <text class="main-title">肉肉食谱</text>
+    </view>
+    <text class="sub-title">今天想吃什么？</text>
+  </view>
+
+  <!-- 今日推荐 -->
+  <view class="recommend-section" wx:if="{{todayRecommend}}">
+    <view class="section-header">
+      <text class="section-title">今日推荐</text>
+      <view class="shuffle-btn" bindtap="recommendToday">
+        <text class="icon-shuffle">🔄</text>
+        <text>换一换</text>
+      </view>
+    </view>
+    <view class="recommend-card" bindtap="goToRecommend">
+      <view class="recommend-content">
+        <text class="recommend-name">{{todayRecommend.name}}</text>
+        <view class="recommend-tags">
+          <text class="tag tag-primary">{{todayRecommend.category}}</text>
+          <text class="tag tag-success">{{todayRecommend.ingredients.length}}种配料</text>
+        </view>
+        <text class="recommend-hint">点击查看完整做法 →</text>
+      </view>
+      <view class="recommend-icon">🍳</view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{recipes.length === 0}}">
+    <text class="empty-emoji">🍽️</text>
+    <text class="empty-text">还没有菜谱</text>
+    <text class="empty-hint">点击下方按钮添加你的第一道菜</text>
+    <button class="btn btn-primary mt-30" bindtap="openAddModal">添加菜谱</button>
+  </view>
+
+  <!-- 分类筛选 -->
+  <view class="category-section" wx:if="{{recipes.length > 0}}">
+    <scroll-view scroll-x class="category-scroll">
+      <view class="category-list">
+        <view
+          wx:for="{{categories}}"
+          wx:key="index"
+          class="category-item {{selectedCategory === item ? 'active' : ''}}"
+          bindtap="selectCategory"
+          data-category="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-section" wx:if="{{recipes.length > 0}}">
+    <input
+      class="search-input"
+      placeholder="搜索菜名或配料..."
+      bindinput="onSearch"
+      confirm-type="search"
+    />
+  </view>
+
+  <!-- 菜谱列表 -->
+  <view class="recipe-list" wx:if="{{recipes.length > 0}}">
+    <view class="list-header">
+      <text class="list-count">共 {{recipes.length}} 道菜</text>
+      <button class="btn-add" bindtap="openAddModal">+ 添加</button>
+    </view>
+
+    <view
+      wx:for="{{getFilteredRecipes()}}"
+      wx:key="id"
+      class="recipe-card"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="recipe-left">
+        <view class="recipe-icon">{{item.category === '甜点' ? '🍰' : item.category === '饮品' ? '🥤' : item.category === '快手菜' ? '⚡' : '🍲'}}</view>
+        <view class="recipe-info">
+          <text class="recipe-name">{{item.name}}</text>
+          <view class="recipe-meta">
+            <text class="tag tag-sm tag-primary">{{item.category}}</text>
+            <text class="ingredient-count">{{item.ingredients.length}}种配料</text>
+          </view>
+        </view>
+      </view>
+      <view class="recipe-actions">
+        <text class="delete-btn" catchtap="deleteRecipe" data-id="{{item.id}}">🗑️</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部导航 -->
+  <view class="tab-bar">
+    <view class="tab-item active">
+      <text class="tab-icon">🏠</text>
+      <text>首页</text>
+    </view>
+    <view class="tab-item" bindtap="goToCalendar">
+      <text class="tab-icon">📅</text>
+      <text>计划</text>
+    </view>
+    <view class="tab-item" bindtap="goToMe">
+      <text class="tab-icon">👤</text>
+      <text>我的</text>
+    </view>
+  </view>
+
+  <!-- 添加菜谱弹窗 -->
+  <view class="modal {{showAddModal ? 'show' : ''}}" wx:if="{{showAddModal}}">
+    <view class="modal-content" catchtap="preventTap">
+      <view class="modal-header">
+        <text class="modal-title">添加新菜谱</text>
+        <text class="modal-close" bindtap="closeAddModal">✕</text>
+      </view>
+
+      <form bindsubmit="addRecipe">
+        <view class="form-group">
+          <label class="form-label">菜名 *</label>
+          <input
+            class="input"
+            name="name"
+            placeholder="例如：红烧肉"
+            maxlength="50"
+          />
+        </view>
+
+        <view class="form-group">
+          <label class="form-label">分类</label>
+          <picker mode="selector" range="{{categories}}" value="0" bindchange="onCategoryChange">
+            <view class="picker-value">{{selectedCategory}}</view>
+          </picker>
+        </view>
+
+        <view class="form-group">
+          <label class="form-label">配料 *（每行一个）</label>
+          <textarea
+            class="input textarea"
+            name="ingredients"
+            placeholder="五花肉 500g&#10;生抽 2勺&#10;老抽 1勺&#10;..."
+            maxlength="500"
+          ></textarea>
+        </view>
+
+        <view class="form-group">
+          <label class="form-label">做法步骤（选填，每行一步）</label>
+          <textarea
+            class="input textarea"
+            name="steps"
+            placeholder="1. 五花肉切块焯水&#10;2. 起锅烧油，放入冰糖&#10;3. ..."
+            maxlength="1000"
+          ></textarea>
+        </view>
+
+        <view class="form-group">
+          <label class="form-label">图片链接（选填）</label>
+          <input
+            class="input"
+            name="image"
+            placeholder="输入图片URL"
+          />
+        </view>
+
+        <view class="form-actions">
+          <button class="btn btn-secondary" bindtap="closeAddModal">取消</button>
+          <button class="btn btn-primary" form-type="submit">保存</button>
+        </view>
+      </form>
+    </view>
+  </view>
+</view>

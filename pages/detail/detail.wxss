@@ -1,0 +1,252 @@
+/* pages/detail/detail.wxss */
+
+.page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding-bottom: 160rpx;
+}
+
+/* 头部 */
+.header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60rpx 40rpx 30rpx;
+  position: relative;
+  z-index: 10;
+}
+
+.back-btn, .share-btn {
+  width: 70rpx;
+  height: 70rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  font-size: 36rpx;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.back-btn:active, .share-btn:active {
+  transform: scale(0.9);
+}
+
+.header-title {
+  font-family: var(--font-handwriting);
+  font-size: 36rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 主图区域 */
+.hero-section {
+  position: relative;
+  padding: 0 40rpx;
+  margin-top: -20rpx;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 400rpx;
+  background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%);
+  border-radius: 0 0 60rpx 60rpx;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60rpx;
+}
+
+.dish-emoji {
+  font-size: 140rpx;
+  margin-bottom: 30rpx;
+}
+
+.dish-name {
+  font-family: var(--font-handwriting);
+  font-size: 64rpx;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 20rpx;
+}
+
+.dish-tags {
+  display: flex;
+  gap: 20rpx;
+}
+
+.tag-white {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  padding: 10rpx 24rpx;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+}
+
+/* 区块 */
+.section {
+  padding: 40rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-family: var(--font-handwriting);
+  font-size: 40rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.copy-btn {
+  padding: 12rpx 24rpx;
+  background: var(--bg-secondary);
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.copy-btn:active {
+  transform: scale(0.95);
+  background: #FFF0EE;
+}
+
+/* 配料列表 */
+.ingredient-list {
+  background: var(--bg-secondary);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+}
+
+.ingredient-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid var(--border-color);
+}
+
+.ingredient-item:last-child {
+  border-bottom: none;
+}
+
+.ingredient-dot {
+  width: 14rpx;
+  height: 14rpx;
+  background: var(--primary);
+  border-radius: 50%;
+  margin-right: 24rpx;
+}
+
+.ingredient-text {
+  font-size: 30rpx;
+  color: var(--text-primary);
+}
+
+/* 步骤列表 */
+.step-list {
+  background: var(--bg-secondary);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+}
+
+.step-item {
+  display: flex;
+  gap: 24rpx;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--border-color);
+}
+
+.step-item:last-child {
+  border-bottom: none;
+}
+
+.step-number {
+  width: 50rpx;
+  height: 50rpx;
+  background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-text {
+  flex: 1;
+  font-size: 28rpx;
+  line-height: 1.7;
+  color: var(--text-primary);
+  padding-top: 6rpx;
+}
+
+/* 底部操作 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30rpx 40rpx;
+  padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
+  background: var(--bg-secondary);
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+.btn-cook {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  width: 100%;
+  padding: 28rpx;
+  background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%);
+  color: white;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-cook::after {
+  border: none;
+}
+
+/* 空状态 */
+.empty-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40rpx;
+}
+
+.empty-emoji {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: var(--text-muted);
+  margin-bottom: 40rpx;
+}

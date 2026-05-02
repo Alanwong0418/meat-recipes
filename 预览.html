@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>肉肉食谱 - 预览版</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #E85D4C;
+      --primary-light: #FF7B6B;
+      --secondary: #4CAF50;
+      --text-primary: #2D2D2D;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --bg-primary: #FFFAF8;
+      --bg-secondary: #FFFFFF;
+      --border-color: #F0E6E4;
+      --font-handwriting: 'Caveat', cursive;
+      --font-body: 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #FFF5F3 0%, var(--bg-primary) 100%);
+    }
+    
+    /* 模拟手机状态栏 */
+    .status-bar {
+      height: 44px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    /* 页面容器 */
+    .page {
+      min-height: calc(100vh - 44px);
+      padding-bottom: 100px;
+    }
+    
+    /* 头部标题 */
+    .header {
+      padding: 30px 20px 20px;
+      text-align: center;
+    }
+    
+    .header-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    
+    .logo-text { font-size: 32px; }
+    
+    .main-title {
+      font-family: var(--font-handwriting);
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .sub-title {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    /* 今日推荐 */
+    .recommend-section {
+      padding: 0 20px;
+      margin-bottom: 20px;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .section-title {
+      font-family: var(--font-handwriting);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .shuffle-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      background: var(--bg-secondary);
+      border-radius: 15px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .shuffle-btn:hover { background: #FFF0EE; }
+    
+    .recommend-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 4px 15px rgba(232, 93, 76, 0.3);
+      cursor: pointer;
+    }
+    
+    .recommend-content { flex: 1; }
+    
+    .recommend-name {
+      font-family: var(--font-handwriting);
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+    
+    .recommend-tags {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .tag {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 15px;
+    }
+    
+    .recommend-hint {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    
+    .recommend-icon { font-size: 40px; margin-left: 15px; }
+    
+    /* 分类筛选 */
+    .category-section {
+      padding: 0 20px;
+      margin-bottom: 15px;
+    }
+    
+    .category-list {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 5px 0;
+    }
+    
+    .category-list::-webkit-scrollbar { display: none; }
+    
+    .category-item {
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .category-item:hover { background: #FFF0EE; }
+    
+    .category-item.active {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+    
+    /* 搜索框 */
+    .search-section {
+      padding: 0 20px;
+      margin-bottom: 15px;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 25px;
+      font-size: 14px;
+      outline: none;
+    }
+    
+    .search-input:focus { border-color: var(--primary); }
+    
+    /* 菜谱列表 */
+    .recipe-list {
+      padding: 0 20px;
+    }
+    
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .list-count { font-size: 13px; color: var(--text-muted); }
+    
+    .btn-add {
+      padding: 6px 14px;
+      background: var(--primary);
+      color: white;
+      border-radius: 15px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .recipe-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .recipe-card:hover { transform: scale(0.98); }
+    
+    .recipe-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+    
+    .recipe-icon {
+      font-size: 28px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #FFF0EE 0%, #FFE5E2 100%);
+      border-radius: 10px;
+    }
+    
+    .recipe-info { flex: 1; }
+    
+    .recipe-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+    
+    .recipe-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .tag-primary {
+      background: rgba(232, 93, 76, 0.1);
+      color: var(--primary);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 15px;
+    }
+    
+    .ingredient-count { font-size: 12px; color: var(--text-muted); }
+    
+    .delete-btn { font-size: 18px; opacity: 0.6; cursor: pointer; }
+    .delete-btn:hover { opacity: 1; }
+    
+    /* 空状态 */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 25px;
+      text-align: center;
+    }
+    
+    .empty-emoji { font-size: 60px; margin-bottom: 15px; }
+    .empty-text {
+      font-family: var(--font-handwriting);
+      font-size: 24px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    
+    .empty-hint { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    
+    .btn-primary {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .mt-30 { margin-top: 15px; }
+    
+    /* 底部导航 */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      display: flex;
+      justify-content: space-around;
+      background: var(--bg-secondary);
+      padding: 8px 0;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom, 20px));
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.06);
+      z-index: 100;
+    }
+    
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 5px 20px;
+      cursor: pointer;
+    }
+    
+    .tab-icon { font-size: 22px; margin-bottom: 2px; }
+    
+    .tab-item span:last-child {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    
+    .tab-item.active span:last-child {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    /* 弹窗 */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    
+    .modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content {
+      width: 90%;
+      max-height: 85vh;
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 20px;
+      transform: translateY(25px);
+      transition: transform 0.3s;
+      overflow-y: auto;
+    }
+    
+    .modal.show .modal-content { transform: translateY(0); }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-family: var(--font-handwriting);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    
+    .form-group { margin-bottom: 16px; }
+    
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    
+    .input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 14px;
+      background: var(--bg-primary);
+      font-family: var(--font-body);
+    }
+    
+    .textarea {
+      min-height: 90px;
+      line-height: 1.8;
+      resize: none;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    
+    .form-actions .btn { flex: 1; }
+    
+    .btn-secondary {
+      padding: 12px;
+      background: var(--bg-secondary);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-block { width: 100%; }
+    
+    /* 页面切换 */
+    .page-view { display: none; }
+    .page-view.active { display: block; }
+  </style>
+</head>
+<body>
+  <!-- 首页 -->
+  <div id="home-page" class="page-view active">
+    <div class="status-bar">9:41</div>
+    <div class="page">
+      <!-- 顶部标题 -->
+      <view class="header">
+        <view class="header-title">
+          <span class="logo-text">🥩</span>
+          <span class="main-title">肉肉食谱</span>
+        </view>
+        <text class="sub-title">今天想吃什么？</text>
+      </view>
+
+      <!-- 今日推荐 -->
+      <div class="recommend-section">
+        <div class="section-header">
+          <span class="section-title">今日推荐</span>
+          <div class="shuffle-btn" onclick="shuffleRecommend()">
+            <span>🔄</span>
+            <span>换一换</span>
+          </div>
+        </div>
+        <div class="recommend-card" onclick="showRecipeDetail()">
+          <div class="recommend-content">
+            <div class="recommend-name" id="recommend-name">红烧肉</div>
+            <div class="recommend-tags">
+              <span class="tag">硬菜</span>
+              <span class="tag">5种配料</span>
+            </div>
+            <div class="recommend-hint">点击查看完整做法 →</div>
+          </div>
+          <div class="recommend-icon">🍳</div>
+        </div>
+      </div>
+
+      <!-- 空状态 -->
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <span class="empty-emoji">🍽️</span>
+        <span class="empty-text">还没有菜谱</span>
+        <span class="empty-hint">点击下方按钮添加你的第一道菜</span>
+        <button class="btn-primary mt-30" onclick="openAddModal()">添加菜谱</button>
+      </div>
+
+      <!-- 分类筛选 -->
+      <div class="category-section" id="category-section">
+        <div class="category-list">
+          <span class="category-item active" onclick="selectCategory(this)">全部</span>
+          <span class="category-item" onclick="selectCategory(this)">家常菜</span>
+          <span class="category-item" onclick="selectCategory(this)">快手菜</span>
+          <span class="category-item" onclick="selectCategory(this)">硬菜</span>
+          <span class="category-item" onclick="selectCategory(this)">甜点</span>
+          <span class="category-item" onclick="selectCategory(this)">饮品</span>
+        </div>
+      </div>
+
+      <!-- 搜索框 -->
+      <div class="search-section" id="search-section">
+        <input class="search-input" placeholder="搜索菜名或配料..." id="search-input" />
+      </div>
+
+      <!-- 菜谱列表 -->
+      <div class="recipe-list" id="recipe-list">
+        <div class="list-header">
+          <span class="list-count">共 3 道菜</span>
+          <button class="btn-add" onclick="openAddModal()">+ 添加</button>
+        </div>
+
+        <div class="recipe-card" onclick="showRecipeDetail()">
+          <div class="recipe-left">
+            <div class="recipe-icon">🍲</div>
+            <div class="recipe-info">
+              <div class="recipe-name">红烧肉</div>
+              <div class="recipe-meta">
+                <span class="tag tag-primary">硬菜</span>
+                <span class="ingredient-count">5种配料</span>
+              </div>
+            </div>
+          </div>
+          <span class="delete-btn" onclick="event.stopPropagation(); deleteRecipe()">🗑️</span>
+        </div>
+
+        <div class="recipe-card" onclick="showRecipeDetail()">
+          <div class="recipe-left">
+            <div class="recipe-icon">⚡</div>
+            <div class="recipe-info">
+              <div class="recipe-name">番茄炒蛋</div>
+              <div class="recipe-meta">
+                <span class="tag tag-primary">快手菜</span>
+                <span class="ingredient-count">4种配料</span>
+              </div>
+            </div>
+          </div>
+          <span class="delete-btn" onclick="event.stopPropagation(); deleteRecipe()">🗑️</span>
+        </div>
+
+        <div class="recipe-card" onclick="showRecipeDetail()">
+          <div class="recipe-left">
+            <div class="recipe-icon">🍰</div>
+            <div class="recipe-info">
+              <div class="recipe-name">芒果班戟</div>
+              <div class="recipe-meta">
+                <span class="tag tag-primary">甜点</span>
+                <span class="ingredient-count">6种配料</span>
+              </div>
+            </div>
+          </div>
+          <span class="delete-btn" onclick="event.stopPropagation(); deleteRecipe()">🗑️</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="tab-bar">
+      <div class="tab-item active" onclick="switchTab('home')">
+        <span class="tab-icon">🏠</span>
+        <span>首页</span>
+      </div>
+      <div class="tab-item" onclick="switchTab('calendar')">
+        <span class="tab-icon">📅</span>
+        <span>计划</span>
+      </div>
+      <div class="tab-item" onclick="switchTab('me')">
+        <span class="tab-icon">👤</span>
+        <span>我的</span>
+      </div>
+    </div>
+
+    <!-- 添加菜谱弹窗 -->
+    <div class="modal" id="add-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="modal-title">添加新菜谱</span>
+          <span class="modal-close" onclick="closeAddModal()">✕</span>
+        </div>
+
+        <form id="add-form">
+          <div class="form-group">
+            <label class="form-label">菜名 *</label>
+            <input class="input" name="name" placeholder="例如：红烧肉" maxlength="50" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">配料 *（每行一个）</label>
+            <textarea class="input textarea" name="ingredients" placeholder="五花肉 500g
+生抽 2勺
+老抽 1勺
+..." maxlength="500"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">做法步骤（选填，每行一步）</label>
+            <textarea class="input textarea" name="steps" placeholder="1. 五花肉切块焯水
+2. 起锅烧油，放入冰糖
+3. ..." maxlength="1000"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeAddModal()">取消</button>
+            <button type="button" class="btn btn-primary" onclick="addRecipe()">保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 详情页 -->
+  <div id="detail-page" class="page-view">
+    <div class="status-bar">9:41</div>
+    <div class="page" style="padding-bottom: 100px;">
+      <!-- 头部 -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 30px 20px 15px;">
+        <div class="back-btn" onclick="goBack()" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.9); border-radius: 50%; font-size: 18px; cursor: pointer;">←</div>
+        <span style="font-family: var(--font-handwriting); font-size: 18px; font-weight: 600;">菜谱详情</span>
+        <div class="share-btn" onclick="goBack()" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.9); border-radius: 50%; font-size: 18px; cursor: pointer;">🗑️</div>
+      </div>
+
+      <!-- 主图区域 -->
+      <div style="position: relative; padding: 0 20px; margin-top: -10px;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 200px; background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%); border-radius: 0 0 30px 30px;"></div>
+        <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; padding-top: 30px;">
+          <span style="font-size: 70px;">🍲</span>
+          <span style="font-family: var(--font-handwriting); font-size: 32px; font-weight: 700; color: white; margin: 15px 0 10px;">红烧肉</span>
+          <div style="display: flex; gap: 10px;">
+            <span class="tag">硬菜</span>
+            <span class="tag">5种配料</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 配料区 -->
+      <div style="padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <span style="font-family: var(--font-handwriting); font-size: 20px; font-weight: 600;">🥬 配料清单</span>
+          <div style="padding: 6px 12px; background: var(--bg-secondary); border-radius: 15px; font-size: 12px; color: var(--primary); cursor: pointer;">复制全部</div>
+        </div>
+        <div style="background: var(--bg-secondary); border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <div style="display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color);">
+            <div style="width: 7px; height: 7px; background: var(--primary); border-radius: 50%; margin-right: 12px;"></div>
+            <span style="font-size: 15px;">五花肉 500g</span>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color);">
+            <div style="width: 7px; height: 7px; background: var(--primary); border-radius: 50%; margin-right: 12px;"></div>
+            <span style="font-size: 15px;">生抽 2勺</span>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color);">
+            <div style="width: 7px; height: 7px; background: var(--primary); border-radius: 50%; margin-right: 12px;"></div>
+            <span style="font-size: 15px;">老抽 1勺</span>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color);">
+            <div style="width: 7px; height: 7px; background: var(--primary); border-radius: 50%; margin-right: 12px;"></div>
+            <span style="font-size: 15px;">冰糖 30g</span>
+          </div>
+          <div style="display: flex; align-items: center; padding: 10px 0;">
+            <div style="width: 7px; height: 7px; background: var(--primary); border-radius: 50%; margin-right: 12px;"></div>
+            <span style="font-size: 15px;">姜片 3片</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 做法区 -->
+      <div style="padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <span style="font-family: var(--font-handwriting); font-size: 20px; font-weight: 600;">👨‍🍳 烹饪步骤</span>
+          <div style="padding: 6px 12px; background: var(--bg-secondary); border-radius: 15px; font-size: 12px; color: var(--primary); cursor: pointer;">复制步骤</div>
+        </div>
+        <div style="background: var(--bg-secondary); border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <div style="display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+            <div style="width: 25px; height: 25px; background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0;">1</div>
+            <span style="flex: 1; font-size: 14px; line-height: 1.7;">五花肉切块，冷水下锅焯水去血沫，捞出备用。</span>
+          </div>
+          <div style="display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+            <div style="width: 25px; height: 25px; background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0;">2</div>
+            <span style="flex: 1; font-size: 14px; line-height: 1.7;">起锅烧油，放入冰糖小火炒至焦糖色。</span>
+          </div>
+          <div style="display: flex; gap: 12px; padding: 12px 0;">
+            <div style="width: 25px; height: 25px; background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0;">3</div>
+            <span style="flex: 1; font-size: 14px; line-height: 1.7;">放入五花肉翻炒上色，加入生抽、老抽、姜片，加水没过肉，大火烧开转小火炖40分钟。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部操作 -->
+    <div style="position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; padding: 15px 20px; padding-bottom: calc(15px + env(safe-area-inset-bottom, 20px)); background: var(--bg-secondary); box-shadow: 0 -2px 10px rgba(0,0,0,0.06);">
+      <button style="display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%); color: white; border-radius: 25px; font-size: 16px; font-weight: 600; border: none;">
+        <span>📤</span>
+        <span>分享给好友</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 我的页面 -->
+  <div id="me-page" class="page-view">
+    <div class="status-bar">9:41</div>
+    <div class="page" style="padding-bottom: 100px;">
+      <!-- 头部 -->
+      <div style="display: flex; flex-direction: column; align-items: center; padding: 30px 20px 20px; background: linear-gradient(180deg, #FFF5F3 0%, var(--bg-primary) 100%);">
+        <div style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary) 0%, #FF8A7A 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(232, 93, 76, 0.3);">
+          <span style="font-size: 40px;">🍖</span>
+        </div>
+        <span style="font-family: var(--font-handwriting); font-size: 24px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">肉肉的主人</span>
+        <span style="font-size: 13px; color: var(--text-muted);">好好吃饭，认真生活</span>
+      </div>
+
+      <!-- 统计数据 -->
+      <div style="display: flex; padding: 0 20px; gap: 10px; margin-bottom: 20px;">
+        <div style="flex: 1; background: var(--bg-secondary); border-radius: 12px; padding: 15px 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <span style="display: block; font-family: var(--font-handwriting); font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 4px;">3</span>
+          <span style="font-size: 12px; color: var(--text-muted);">我的菜谱</span>
+        </div>
+        <div style="flex: 1; background: var(--bg-secondary); border-radius: 12px; padding: 15px 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <span style="display: block; font-family: var(--font-handwriting); font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 4px;">5</span>
+          <span style="font-size: 12px; color: var(--text-muted);">分类</span>
+        </div>
+        <div style="flex: 1; background: var(--bg-secondary); border-radius: 12px; padding: 15px 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <span style="display: block; font-family: var(--font-handwriting); font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 4px;">1</span>
+          <span style="font-size: 12px; color: var(--text-muted);">本周新增</span>
+        </div>
+      </div>
+
+      <!-- 分类管理 -->
+      <div style="padding: 0 20px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-family: var(--font-handwriting); font-size: 18px; font-weight: 600;">🏷️ 菜谱分类</span>
+          <span style="padding: 5px 12px; background: var(--primary); color: white; border-radius: 15px; font-size: 12px; cursor: pointer;">+ 添加</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <span style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--bg-secondary); border-radius: 20px; font-size: 13px; box-shadow: 0 1px 5px rgba(0,0,0,0.04);">家常菜 <span style="font-size: 16px; color: var(--text-muted); cursor: pointer;">×</span></span>
+          <span style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--bg-secondary); border-radius: 20px; font-size: 13px; box-shadow: 0 1px 5px rgba(0,0,0,0.04);">快手菜 <span style="font-size: 16px; color: var(--text-muted); cursor: pointer;">×</span></span>
+          <span style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--bg-secondary); border-radius: 20px; font-size: 13px; box-shadow: 0 1px 5px rgba(0,0,0,0.04);">硬菜 <span style="font-size: 16px; color: var(--text-muted); cursor: pointer;">×</span></span>
+          <span style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--bg-secondary); border-radius: 20px; font-size: 13px; box-shadow: 0 1px 5px rgba(0,0,0,0.04);">甜点 <span style="font-size: 16px; color: var(--text-muted); cursor: pointer;">×</span></span>
+          <span style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--bg-secondary); border-radius: 20px; font-size: 13px; box-shadow: 0 1px 5px rgba(0,0,0,0.04);">饮品 <span style="font-size: 16px; color: var(--text-muted); cursor: pointer;">×</span></span>
+        </div>
+      </div>
+
+      <!-- 关于 -->
+      <div style="padding: 0 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-family: var(--font-handwriting); font-size: 18px; font-weight: 600;">💡 关于</span>
+        </div>
+        <div style="background: var(--bg-secondary); border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <span style="display: block; font-family: var(--font-handwriting); font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 4px;">肉肉食谱</span>
+          <span style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px; display: block;">版本 1.0.0</span>
+          <span style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">属于你的个人菜谱管家，记录每一道想吃的菜</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="tab-bar">
+      <div class="tab-item" onclick="switchTab('home')">
+        <span class="tab-icon">🏠</span>
+        <span>首页</span>
+      </div>
+      <div class="tab-item" onclick="switchTab('calendar')">
+        <span class="tab-icon">📅</span>
+        <span>计划</span>
+      </div>
+      <div class="tab-item active" onclick="switchTab('me')">
+        <span class="tab-icon">👤</span>
+        <span>我的</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 计划页 -->
+  <div id="calendar-page" class="page-view">
+    <div class="status-bar">9:41</div>
+    <div class="page" style="padding-bottom: 100px;">
+      <div style="padding: 30px 20px 20px; text-align: center;">
+        <span style="font-family: var(--font-handwriting); font-size: 32px; font-weight: 700; color: var(--primary);">📅 做菜计划</span>
+      </div>
+
+      <div style="padding: 20px;">
+        <div style="background: var(--bg-secondary); border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <span style="font-size: 48px; margin-bottom: 10px; display: block;">📝</span>
+          <span style="font-family: var(--font-handwriting); font-size: 20px; color: var(--text-primary); margin-bottom: 8px; display: block;">功能开发中</span>
+          <span style="font-size: 13px; color: var(--text-muted);">即将上线：每周做菜计划、购物清单生成</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="tab-bar">
+      <div class="tab-item" onclick="switchTab('home')">
+        <span class="tab-icon">🏠</span>
+        <span>首页</span>
+      </div>
+      <div class="tab-item active" onclick="switchTab('calendar')">
+        <span class="tab-icon">📅</span>
+        <span>计划</span>
+      </div>
+      <div class="tab-item" onclick="switchTab('me')">
+        <span class="tab-icon">👤</span>
+        <span>我的</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 示例菜谱数据
+    const recipes = [
+      { id: 1, name: '红烧肉', category: '硬菜', ingredients: ['五花肉 500g', '生抽 2勺', '老抽 1勺', '冰糖 30g', '姜片 3片'] },
+      { id: 2, name: '番茄炒蛋', category: '快手菜', ingredients: ['番茄 2个', '鸡蛋 3个', '盐 适量', '糖 少许'] },
+      { id: 3, name: '芒果班戟', category: '甜点', ingredients: ['芒果 1个', '班戟皮 4张', '淡奶油 200ml', '糖粉 20g', '牛奶 100ml', '鸡蛋 2个'] }
+    ];
+    
+    // 当前显示的页面
+    let currentTab = 'home';
+    
+    // 切换页面
+    function switchTab(tab) {
+      // 隐藏所有页面
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      
+      // 显示目标页面
+      const page = document.getElementById(tab + '-page');
+      if (page) {
+        page.classList.add('active');
+        currentTab = tab;
+        
+        // 更新底部导航状态
+        document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+      }
+    }
+    
+    // 分类筛选
+    function selectCategory(el) {
+      document.querySelectorAll('.category-item').forEach(item => item.classList.remove('active'));
+      el.classList.add('active');
+    }
+    
+    // 打开添加弹窗
+    function openAddModal() {
+      document.getElementById('add-modal').classList.add('show');
+    }
+    
+    // 关闭添加弹窗
+    function closeAddModal() {
+      document.getElementById('add-modal').classList.remove('show');
+    }
+    
+    // 添加菜谱
+    function addRecipe() {
+      alert('菜谱添加成功！');
+      closeAddModal();
+    }
+    
+    // 删除菜谱
+    function deleteRecipe() {
+      if (confirm('确定要删除这个菜谱吗？')) {
+        alert('已删除');
+      }
+    }
+    
+    // 显示菜谱详情
+    function showRecipeDetail() {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      document.getElementById('detail-page').classList.add('active');
+    }
+    
+    // 返回
+    function goBack() {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      document.getElementById('home-page').classList.add('active');
+    }
+    
+    // 随机推荐
+    function shuffleRecommend() {
+      const names = ['红烧肉', '糖醋排骨', '宫保鸡丁', '鱼香肉丝', '麻婆豆腐'];
+      const name = names[Math.floor(Math.random() * names.length)];
+      document.getElementById('recommend-name').textContent = name;
+    }
+    
+    // 点击弹窗背景关闭
+    document.getElementById('add-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeAddModal();
+      }
+    });
+  </script>
+</body>
+</html>

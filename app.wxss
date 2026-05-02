@@ -1,0 +1,322 @@
+/* 肉肉食谱 - 全局样式 */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+/* CSS变量定义 */
+:root {
+  /* 主色调 - 温暖食欲色 */
+  --primary: #E85D4C;
+  --primary-light: #FF7B6B;
+  --primary-dark: #C74B3A;
+
+  /* 辅助色 - 清新绿 */
+  --secondary: #4CAF50;
+  --secondary-light: #81C784;
+  --secondary-dark: #388E3C;
+
+  /* 中性色 */
+  --text-primary: #2D2D2D;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --bg-primary: #FFFAF8;
+  --bg-secondary: #FFFFFF;
+  --border-color: #F0E6E4;
+
+  /* 功能色 */
+  --warning: #FF9800;
+  --danger: #F44336;
+  --success: #4CAF50;
+
+  /* 字体 */
+  --font-handwriting: 'Caveat', cursive;
+  --font-body: 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 重置样式 */
+page {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 28rpx;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+/* 容器 */
+.container {
+  min-height: 100vh;
+  padding: 30rpx;
+  padding-bottom: 140rpx;
+}
+
+/* 标题样式 - 手写风 */
+.title-handwriting {
+  font-family: var(--font-handwriting);
+  font-size: 48rpx;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* 卡片样式 */
+.card {
+  background: var(--bg-secondary);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(232, 93, 76, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 10rpx rgba(232, 93, 76, 0.06);
+}
+
+/* 按钮样式 */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 48rpx;
+  border-radius: 50rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: white;
+  border: none;
+}
+
+.btn-primary:active {
+  opacity: 0.9;
+  transform: scale(0.96);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--primary);
+  border: 2rpx solid var(--primary);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* 输入框 */
+.input {
+  width: 100%;
+  padding: 24rpx 30rpx;
+  border: 2rpx solid var(--border-color);
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-family: var(--font-body);
+  background: var(--bg-secondary);
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+/* 标签 */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  border-radius: 30rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.tag-primary {
+  background: rgba(232, 93, 76, 0.1);
+  color: var(--primary);
+}
+
+.tag-success {
+  background: rgba(76, 175, 80, 0.1);
+  color: var(--secondary);
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 50rpx;
+  text-align: center;
+}
+
+.empty-state image {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 40rpx;
+  opacity: 0.6;
+}
+
+.empty-state text {
+  color: var(--text-muted);
+  font-size: 28rpx;
+}
+
+/* 底部导航 */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  background: var(--bg-secondary);
+  padding: 16rpx 0;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
+  z-index: 100;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10rpx 40rpx;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.tab-item:active {
+  transform: scale(0.95);
+}
+
+.tab-item image {
+  width: 48rpx;
+  height: 48rpx;
+  margin-bottom: 6rpx;
+}
+
+.tab-item text {
+  font-size: 22rpx;
+  color: var(--text-muted);
+}
+
+.tab-item.active text {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* 弹窗 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  width: 90%;
+  max-height: 85vh;
+  background: var(--bg-secondary);
+  border-radius: 32rpx;
+  padding: 40rpx;
+  transform: translateY(50rpx);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+.modal.show .modal-content {
+  transform: translateY(0);
+}
+
+/* 动画 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.animate-pulse {
+  animation: pulse 0.5s ease;
+}
+
+/* 工具类 */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-10 { gap: 20rpx; }
+.gap-20 { gap: 40rpx; }
+.mt-20 { margin-top: 40rpx; }
+.mt-30 { margin-top: 60rpx; }
+.mb-20 { margin-bottom: 40rpx; }
+.mb-30 { margin-bottom: 60rpx; }
+.text-center { text-align: center; }
+.text-muted { color: var(--text-muted); }
+.text-primary { color: var(--primary); }
+.text-sm { font-size: 24rpx; }
+.font-bold { font-weight: 700; }
+
+/* 图片展示 */
+.dish-image {
+  width: 100%;
+  height: 300rpx;
+  border-radius: 20rpx;
+  object-fit: cover;
+  background: var(--border-color);
+}
+
+/* 配料列表 */
+.ingredient-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid var(--border-color);
+}
+
+.ingredient-item:last-child {
+  border-bottom: none;
+}
+
+.ingredient-dot {
+  width: 12rpx;
+  height: 12rpx;
+  background: var(--primary);
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+/* 滚动区域 */
+.scroll-view {
+  height: calc(100vh - 200rpx);
+}

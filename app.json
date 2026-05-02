@@ -1,0 +1,29 @@
+{
+  "appid": "__UNI__MEAT_RECIPE",
+  "name": "肉肉食谱",
+  "description": "属于你的个人菜谱管家",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "mpappid": "",
+  "miniProgram": {
+    "appid": "",
+    "query": ""
+  },
+  "app-plus": {
+    "usingComponents": true
+  },
+  "h5": {
+    "router": {
+      "mode": "hash",
+      "base": "/"
+    },
+    "devServer": {
+      "port": 8080,
+      "https": false
+    }
+  },
+  "uniStatistics": {
+    "enable": false
+  }
+}
