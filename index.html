@@ -217,6 +217,78 @@
       padding: 14px;
       margin-bottom: 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      position: relative;
+    }
+
+    .add-plan-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 2px 6px rgba(232,93,76,0.35);
+      margin-left: 8px;
+    }
+    .add-plan-btn:hover { transform: scale(1.12); }
+    .add-plan-btn:active { transform: scale(0.95); }
+
+    .quick-meal-modal {
+      display: none;
+      position: fixed;
+      left: 0; top: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 2000;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .quick-meal-modal.show { display: flex; }
+    .quick-meal-box {
+      width: 100%;
+      max-width: 430px;
+      background: #fff;
+      border-radius: 18px 18px 0 0;
+      padding: 24px 20px 30px;
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .quick-meal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .quick-meal-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .quick-meal-opt {
+      padding: 14px 0;
+      border-radius: 12px;
+      border: 2px solid var(--border-color);
+      background: var(--bg-primary);
+      font-size: 15px;
+      color: var(--text-primary);
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .quick-meal-opt:active {
+      border-color: var(--primary);
+      background: #FFF0EE;
     }
 
     .recipe-left {
@@ -549,7 +621,10 @@
             </div>
             <div class="recommend-hint">点击查看完整做法 →</div>
           </div>
-          <div class="recommend-icon">🍳</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button class="add-plan-btn" onclick="event.stopPropagation(); quickAddRecommend()" title="加入今日计划">+</button>
+            <div class="recommend-icon">🍳</div>
+          </div>
         </div>
       </div>
 
@@ -800,6 +875,20 @@
       </div>
     </div>
 
+    <!-- 快速添加到计划弹窗 -->
+    <div class="quick-meal-modal" id="quick-meal-modal" onclick="if(event.target===this)closeQuickMeal()">
+      <div class="quick-meal-box">
+        <div class="quick-meal-title">加入今日计划</div>
+        <div class="quick-meal-options">
+          <button class="quick-meal-opt" onclick="confirmQuickAdd('早餐')">🌅 早餐</button>
+          <button class="quick-meal-opt" onclick="confirmQuickAdd('午餐')">🍱 午餐</button>
+          <button class="quick-meal-opt" onclick="confirmQuickAdd('晚餐')">🍽️ 晚餐</button>
+          <button class="quick-meal-opt" onclick="confirmQuickAdd('加餐')">🍪 加餐</button>
+        </div>
+        <button onclick="closeQuickMeal()" style="width:100%; margin-top:12px; padding:10px; background:none; border:none; color:var(--text-muted); font-size:14px; cursor:pointer;">取消</button>
+      </div>
+    </div>
+
     <div class="tab-bar">
       <div class="tab-item" onclick="switchTab('home')">
         <span class="tab-icon">🏠</span>
@@ -995,6 +1084,7 @@
 
       filtered.forEach(recipe => {
         const idStr = typeof recipe.id === 'string' ? `'${recipe.id.replace(/'/g, "\\'")}'` : `'${recipe.id}'`;
+        const nameEscaped = recipe.name.replace(/'/g, "\\'");
         const deleteBtn = recipe.fromDB
           ? ''
           : `<span class="delete-btn" onclick="event.stopPropagation(); deleteRecipe(${idStr})">🗑️</span>`;
@@ -1010,6 +1100,7 @@
                 </div>
               </div>
             </div>
+            <button class="add-plan-btn" onclick="event.stopPropagation(); showQuickMealSelector(${idStr}, '${nameEscaped}')" title="加入今日计划">+</button>
             ${deleteBtn}
           </div>
         `;
@@ -1155,6 +1246,7 @@
 
     // ===== 今日推荐 =====
     let currentRecommendId = null;
+    let currentRecommendName = null;
 
     function shuffleRecommend() {
       const item = recommendPool[Math.floor(Math.random() * recommendPool.length)];
@@ -1164,6 +1256,7 @@
       const recipes = getAllRecipes();
       const match = recipes.find(r => r.name === item.name);
       currentRecommendId = match ? match.id : null;
+      currentRecommendName = item.name;
     }
 
     function showRecommendDetail() {
@@ -1175,6 +1268,16 @@
         const recipe = recipes.find(r => r.name === name);
         if (recipe) showRecipeDetail(recipe.id);
       }
+    }
+
+    function quickAddRecommend() {
+      const name = currentRecommendName || document.getElementById('recommend-name').textContent;
+      const id = currentRecommendId;
+      if (!id) {
+        showToast('请先选择一道菜');
+        return;
+      }
+      showQuickMealSelector(id, name);
     }
 
     // ===== 我的页面统计 =====
@@ -1386,6 +1489,45 @@
     function initCalendarPage() {
       renderWeekSelector();
       renderPlanList();
+    }
+
+    // ===== 快速添加到计划 =====
+    let quickAddRecipeId = null;
+    let quickAddRecipeName = null;
+
+    function showQuickMealSelector(recipeId, recipeName) {
+      quickAddRecipeId = recipeId;
+      quickAddRecipeName = recipeName;
+      document.getElementById('quick-meal-modal').classList.add('show');
+    }
+
+    function closeQuickMeal() {
+      document.getElementById('quick-meal-modal').classList.remove('show');
+      quickAddRecipeId = null;
+      quickAddRecipeName = null;
+    }
+
+    async function confirmQuickAdd(mealType) {
+      if (!quickAddRecipeId) return;
+
+      const newPlan = {
+        id: 'p_' + Date.now(),
+        recipe_id: quickAddRecipeId,
+        recipe_name: quickAddRecipeName,
+        date: getTodayStr(),
+        meal_type: mealType,
+        created_at: new Date().toISOString()
+      };
+
+      try {
+        await sbPost('cooking_plans', newPlan);
+        allCloudPlans.unshift(newPlan);
+        showToast(`已加入今日${mealType}！`);
+        closeQuickMeal();
+      } catch(e) {
+        console.error(e);
+        showToast('添加失败，请重试');
+      }
     }
   </script>
 </body>
