@@ -1084,10 +1084,10 @@
 
       filtered.forEach(recipe => {
         const idStr = typeof recipe.id === 'string' ? `'${recipe.id.replace(/'/g, "\\'")}'` : `'${recipe.id}'`;
-        const nameEscaped = recipe.name.replace(/'/g, "\\'");
         const deleteBtn = recipe.fromDB
           ? ''
           : `<span class="delete-btn" onclick="event.stopPropagation(); deleteRecipe(${idStr})">🗑️</span>`;
+        const dataName = recipe.name.replace(/"/g, '&quot;');
         html += `
           <div class="recipe-card" onclick="showRecipeDetail(${idStr})">
             <div class="recipe-left">
@@ -1100,7 +1100,7 @@
                 </div>
               </div>
             </div>
-            <button class="add-plan-btn" onclick="event.stopPropagation(); showQuickMealSelector(${idStr}, '${nameEscaped}')" title="加入今日计划">+</button>
+            <button class="add-plan-btn" onclick="event.stopPropagation(); showQuickMealSelectorById(${idStr})" title="加入今日计划">+</button>
             ${deleteBtn}
           </div>
         `;
@@ -1499,6 +1499,13 @@
       quickAddRecipeId = recipeId;
       quickAddRecipeName = recipeName;
       document.getElementById('quick-meal-modal').classList.add('show');
+    }
+
+    function showQuickMealSelectorById(recipeId) {
+      const recipes = getAllRecipes();
+      const recipe = recipes.find(r => String(r.id) === String(recipeId));
+      if (!recipe) { showToast('未找到该菜谱'); return; }
+      showQuickMealSelector(recipeId, recipe.name);
     }
 
     function closeQuickMeal() {
